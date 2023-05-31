@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice-ChatGPT</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Londrina+Shadow"
+    />
+    <link rel="stylesheet" href="./styles/chat.css" />
+    <script src="./scripts/main.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <nav class="nav">
+        <div class="nav__title">Voice-ChatGPT</div>
+        <ul class="nav__list">
+          <li class="nav__item">
+            <a
+              href="https://developer.mozilla.org/ja/docs/Web/API/Web_Speech_API"
+              rel="noopener"
+              target="_blank"
+              class="nav__link"
+              >Web Speech API</a
+            >
+          </li>
+          <li class="nav__item">
+            <a
+              href="https://platform.openai.com/docs/guides/chat"
+              target="_blank"
+              rel="noopener"
+              class="nav__link"
+              >GPT Completions API</a
+            >
+          </li>
+        </ul>
+        <div class="nav__status-bar--display">
+          <div class="nav__status-bar--display__text">STATUS</div>
+        </div>
+      </nav>
+    </header>
+    <main class="main-content">
+      <div class="main-content__container">
+        <div class="main-content__content">
+          <div class="chat-area">
+            <div class="chat-area__message chat-area__message--user">
+              <div class="chat-area__message-content">YOU:</div>
+              <div id="transcript" class="chat-area__output"></div>
+            </div>
+            <div class="chat-area__message chat-area__message--chatgpt">
+              <div class="chat-area__message-content">Dr.GPT:</div>
+              <div id="chatgpt_response" class="chat-area__output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div class="controls">
+        <button
+          id="controls__btn--start"
+          class="controls__btn controls__btn--start"
+        >
+          START
+        </button>
+        <button
+          id="controls__btn--stop"
+          class="controls__btn controls__btn--stop"
+        >
+          STOP
+        </button>
+      </div>
+    </footer>
+  </body>
+</html>

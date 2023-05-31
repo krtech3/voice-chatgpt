@@ -1,0 +1,20 @@
+## Whitelist
+*.*
+
+## Allowlist
+!*.js
+!*.json
+!*.html
+!*.md
+!*.ts
+
+## same as in .gitignore
+!.vscode-test
+!.vscode
+
+## special cases
+# Ignore all files within specific directories (Re-specify to ignore)
+**/.git
+**/.svn
+**/.hg
+**/node_modules
