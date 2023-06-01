@@ -1,11 +1,9 @@
-// グローバル変数の宣言、代入。変数のスコープがややこしくなるので、ここにはできるだけ処理を書かない
 const recordingElement = document.querySelector(".nav__status-bar--display");
 const startRecordingButton = document.getElementById("controls__btn--start");
 const stopRecordingButton = document.getElementById("controls__btn--stop");
 const transcriptElement = document.getElementById("transcript");
 const chatGptResponseElement = document.getElementById("chatgpt_response");
 
-// ステータスパラメータを管理
 const statusParameters = {
   start: {
     statusClass: "nav__status-bar--start",
@@ -29,7 +27,6 @@ const statusParameters = {
   },
 };
 
-// ステータスを変更する関数
 const changeElementStatus = (status, error = null) => {
   const { statusClass, textContent, logMessage } = statusParameters[status];
   recordingElement.className = statusClass;
@@ -46,19 +43,17 @@ const OPENAI_MODEL_NAME = "gpt-3.5-turbo"; // Select OpenAI GPT Model Name ['gpt
 const OPENAI_SYSTEM_ROLE =
   "あなたは世界一物知りなおじさんです。どんな問いにも懇切丁寧に回答します。";
 
-// 音声オブジェクトの生成
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
 recognition.lang = "ja";
-recognition.interimResults = true; // 音声認識途中でも結果を得る
-recognition.continuous = true; // 音声認識を続ける
+recognition.interimResults = true;
+recognition.continuous = true;
 
-// 状態監視フラグのパラメータ
 const flags = {
-  isSpeechRecognizedAndWrittenFlag: false, // 音声認識状態管理
-  isMessageSentFlag: false, // GPT送信状態管理
-  isSpeechSynthesizedFlag: false, // 読み上げ状態管理
+  isSpeechRecognizedAndWrittenFlag: false,
+  isMessageSentFlag: false,
+  isSpeechSynthesizedFlag: false,
 };
 
 function setFlag(flagName) {
@@ -73,24 +68,7 @@ function resetFlags() {
   });
 }
 
-// 即時実行関数
-(() => {
-  console.log("INFO: Starting immediate execution process");
-})();
-
-// DOMツリーが出来上がったら実行_※画像読み込み前
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("INFO: DOM Tree has been built");
-});
-
-// 最後に実行_※画像読み込み後
-window.onload = function () {
-  console.log("window.onloadが完了");
-};
-
-// APIリクエストの設定を生成する関数
 function createApiRequestOptions(message) {
-  // APIリクエストのヘッダーを設定
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
   headers.append("Authorization", `Bearer ${OPENAI_API_KEY}`);
@@ -112,7 +90,6 @@ function createApiRequestOptions(message) {
   return requestOptions;
 }
 
-// 自動停止タイマー
 function stopTimer() {
   console.log("INFO:_stopTimer開始");
   setTimeout(() => {
@@ -121,7 +98,6 @@ function stopTimer() {
   console.log("INFO:_stopTimer終了");
 }
 
-// 非同期に音声認識する関数
 async function startSpeechRecognitionAsync() {
   return new Promise((resolve, reject) => {
     let inputVoice = "";
@@ -150,7 +126,6 @@ async function startSpeechRecognitionAsync() {
   });
 }
 
-// Chat-GPTへの送受信処理
 async function sendMessageAsync(message) {
   if (flags.isMessageSentFlag) {
     console.log("ERROR:_sendMessageAsyncは実行済みです");
@@ -225,7 +200,6 @@ function synthSpeak(message) {
   }
 }
 
-// メイン関数
 startRecordingButton.addEventListener("click", async () => {
   resetFlags();
   console.log("INFO:_音声認識を開始");
@@ -234,18 +208,17 @@ startRecordingButton.addEventListener("click", async () => {
     setFlag("isSpeechRecognizedAndWrittenFlag");
 
     const chatGptResponse = await sendMessageAsync(message);
-    setFlag("isMessageSentFlag"); // 送信完了フラグをtrue
+    setFlag("isMessageSentFlag");
 
     await synthSpeak(chatGptResponse);
     changeElementStatus("stop");
-    setFlag("isSpeechSynthesizeFlag"); // 読み上げ完了フラグをtrue
+    setFlag("isSpeechSynthesizeFlag");
   } catch (error) {
     console.error(`ERROR:_メイン関数の処理でエラー: ${error}`);
     changeElementStatus("error", error);
   }
 });
 
-// 音声認識の停止ボタン
 stopRecordingButton.addEventListener("click", () => {
   console.log("INFO:_音声認識を停止");
   recognition.stop();
