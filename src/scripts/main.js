@@ -8,22 +8,22 @@ const statusParameters = {
   start: {
     statusClass: "nav__status-bar--start",
     textContent: "▶︎ Recognizing...",
-    logMessage: "INFO:_音声認識中...",
+    logMessage: "INFO:_Voice Recognition In Progress..",
   },
   response: {
     statusClass: "nav__status-bar--response",
     textContent: "▶︎ Answering...",
-    logMessage: "INFO:_GPT返答中..",
+    logMessage: "INFO:_GPT Responding..",
   },
   stop: {
     statusClass: "nav__status-bar--stop",
     textContent: "■ STOP",
-    logMessage: "INFO:_停止中",
+    logMessage: "INFO:_Stopped",
   },
   error: {
     statusClass: "nav__status-bar--error",
     textContent: "■ STOP",
-    logMessage: "INFO:_エラー: ",
+    logMessage: "INFO:_error: ",
   },
 };
 
@@ -31,22 +31,27 @@ const changeElementStatus = (status, error = null) => {
   const { statusClass, textContent, logMessage } = statusParameters[status];
   recordingElement.className = statusClass;
   recordingElement.textContent = textContent;
-  const statusInfo = error
-    ? `ERROR:_エラー: ${error.message}`
-    : `${logMessage}`;
+  const statusInfo = error ? `ERROR:_ ${error.message}` : `${logMessage}`;
   console.log(statusInfo);
 };
 
-const OPENAI_API_KEY = "sk-xxxxx"; // ここにあなたのOpenAI APIキーを設定します
+// Replace with your actual OpenAI API Key
+const OPENAI_API_KEY = "Your OpenAI API Key Here!";
+
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-const OPENAI_MODEL_NAME = "gpt-3.5-turbo"; // Select OpenAI GPT Model Name ['gpt-4', 'gpt-3.5-turbo']
+
+// Specify the OpenAI GPT model name here. Options are 'gpt-4', 'gpt-3.5-turbo'.
+const OPENAI_MODEL_NAME = "gpt-3.5-turbo";
+
+// Modify 'OPENAI_SYSTEM_ROLE' to customize the model's 'persona' as needed.
 const OPENAI_SYSTEM_ROLE =
-  "あなたは世界一物知りなおじさんです。どんな問いにも懇切丁寧に回答します。";
+  "あなたは優秀なソフトウェアエンジニアです。質問に対して簡潔に回答します。";
 
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
-recognition.lang = "ja";
+// Change 'ja-JP' to 'eu-US' to switch the recognition language.
+recognition.lang = "ja-JP";
 recognition.interimResults = true;
 recognition.continuous = true;
 
@@ -58,13 +63,13 @@ const flags = {
 
 function setFlag(flagName) {
   flags[flagName] = true;
-  console.log(`FLAG:_${flagName}_フラグが立ちました`);
+  console.log(`FLAG:_${flagName} is set`);
 }
 
 function resetFlags() {
   Object.keys(flags).forEach((key) => {
     flags[key] = false;
-    console.log(`FLAG:_${key}_フラグがリセットされました`);
+    console.log(`FLAG:_${key} is reset`);
   });
 }
 
@@ -91,11 +96,11 @@ function createApiRequestOptions(message) {
 }
 
 function stopTimer() {
-  console.log("INFO:_stopTimer開始");
+  console.log("INFO:_stopTimer Started");
   setTimeout(() => {
     recognition.stop();
   }, 5000);
-  console.log("INFO:_stopTimer終了");
+  console.log("INFO:_stopTimer Ended");
 }
 
 async function startSpeechRecognitionAsync() {
@@ -105,22 +110,22 @@ async function startSpeechRecognitionAsync() {
     changeElementStatus("start");
     recognition.onspeechend = () => {
       recognition.stop();
-      console.log("INFO:_音声認識の書き起こし処理完了");
+      console.log("INFO:_Transcription process completed");
     };
     recognition.onresult = (event) => {
       inputVoice = event.results[0][0].transcript;
       transcriptElement.textContent = inputVoice;
-      console.log("INFO:_音声認識の書き起こし中...");
+      console.log("INFO:_Transcribing..");
       stopTimer();
     };
     recognition.onend = () => {
-      console.log("INFO:_音声認識が終了");
+      console.log("INFO:_Voice recognition ended");
       resolve(inputVoice);
     };
     recognition.onerror = (event) => {
       changeElementStatus("stop");
       setFlag("isSpeechSynthesizedFlag");
-      console.log(`ERROR:_音声認識でエラーが発生: ${event.error}`);
+      console.log(`ERROR:_Error occurred in voice recognition: ${event.error}`);
       reject(event.error);
     };
   });
@@ -128,7 +133,7 @@ async function startSpeechRecognitionAsync() {
 
 async function sendMessageAsync(message) {
   if (flags.isMessageSentFlag) {
-    console.log("ERROR:_sendMessageAsyncは実行済みです");
+    console.log("ERROR:_sendMessageAsync is already executed");
     return;
   }
 
@@ -142,7 +147,7 @@ async function sendMessageAsync(message) {
 
     if (!response.ok) {
       alert(
-        `認証失敗:正しいAPI KEYを設定してください - Status: ${response.status}`
+        `Authentication failure: please set the correct API KEY - Status: ${response.status}`
       );
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
@@ -152,19 +157,19 @@ async function sendMessageAsync(message) {
     );
 
     recognition.stop();
-    console.log("INFO:_音声認識をSTOP");
+    console.log("INFO:_Voice recognition stopped");
 
     changeElementStatus("response");
     const chatGptResponse = data.choices[0].message.content;
     chatGptResponseElement.textContent = chatGptResponse;
-    console.log("INFO:_GPTの返答をテキストに書き出し中...");
+    console.log("INFO:_Writing GPT's reply to text..");
 
     setFlag("isMessageSentFlag");
-    console.log(`INFO:_GPTの返答------->${chatGptResponse}`);
+    console.log(`INFO:_GPT's reply------->${chatGptResponse}`);
     // eslint-disable-next-line consistent-return
     return chatGptResponse;
   } catch (error) {
-    console.error(`ERROR:_ChatGPTへメッセージ送信中にエラー: ${error}`);
+    console.error(`ERROR:_Error while sending message to ChatGPT: ${error}`);
     changeElementStatus("error", error);
     throw error;
   }
@@ -172,8 +177,12 @@ async function sendMessageAsync(message) {
 
 function synthSpeak(message) {
   if (flags.isSpeechSynthesizedFlag) {
-    console.log("ERROR:_読み上げ処理中にエラー発生: ブラウザを更新して下さい");
-    alert("ERROR:_読み上げ処理中にエラー発生: ブラウザを更新して下さい");
+    console.log(
+      "ERROR:_Error occurred during speech synthesis: Please refresh the browser"
+    );
+    alert(
+      "ERROR:_Error occurred during speech synthesis: Please refresh the browser"
+    );
     return;
   }
   try {
@@ -183,18 +192,20 @@ function synthSpeak(message) {
       utterance.lang = "ja-JP";
 
       utterance.onend = () => {
-        console.log("INFO:_音声合成が終了");
+        console.log("INFO:_Speech synthesis ended");
         resolve();
       };
       utterance.onerror = (event) => {
-        console.log(`ERROR:_音声合成処理中にエラー発生: ${event.error}`);
+        console.log(
+          `ERROR:_Error occurred during speech synthesis: ${event.error}`
+        );
         reject(event.error);
       };
 
       window.speechSynthesis.speak(utterance);
     });
   } catch (error) {
-    console.error(`ERROR:_音声合成処理中にエラー発生: ${error}`);
+    console.error(`ERROR:_Error occurred during speech synthesis: ${error}`);
     changeElementStatus("error", error);
     throw error;
   }
@@ -202,7 +213,7 @@ function synthSpeak(message) {
 
 startRecordingButton.addEventListener("click", async () => {
   resetFlags();
-  console.log("INFO:_音声認識を開始");
+  console.log("INFO:_Starting voice recognition");
   try {
     const message = await startSpeechRecognitionAsync();
     setFlag("isSpeechRecognizedAndWrittenFlag");
@@ -214,13 +225,13 @@ startRecordingButton.addEventListener("click", async () => {
     changeElementStatus("stop");
     setFlag("isSpeechSynthesizeFlag");
   } catch (error) {
-    console.error(`ERROR:_メイン関数の処理でエラー: ${error}`);
+    console.error(`ERROR:_Error in the main function's process: ${error}`);
     changeElementStatus("error", error);
   }
 });
 
 stopRecordingButton.addEventListener("click", () => {
-  console.log("INFO:_音声認識を停止");
+  console.log("INFO:_Voice recognition stopped");
   recognition.stop();
   speechSynthesis.cancel();
   changeElementStatus("stop");
