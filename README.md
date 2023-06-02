@@ -1,28 +1,24 @@
 # Voice-ChatGPT
 
 ## Description
-This application, Voice-ChatGPT, is an interactive, voice-responsive system developed entirely using JavaScript. It transcribes voice input, sends the transcriptions to OpenAI's advanced language model, and speaks the model's responses back to the user.
+Voice-ChatGPT is a fully JavaScript-based, interactive, voice-responsive application. It utilizes user voice input, transcribes it, interacts with OpenAI's advanced language model GPT, and vocalizes the generated responses, thus facilitating a dynamic conversation.
 
 ## Features
-* Voice Recognition:
-  Transcribes user's spoken language into written text.
-* GPT Interaction:
-  Sends the transcribed text-based message from user's spoken language to the ChatGPT and receives a response.
-* Text-to-Speech:
-  The text-based response from ChatGPT is converted back to spoken language, providing a seamless and dynamic conversational experience.
+* **Voice Recognition:** Transcribes the user's spoken language into text.
+* **GPT Interaction:** Sends the transcribed text to ChatGPT, then fetches and processes the response.
+* **Text-to-Speech:** Converts the text-based response from ChatGPT back into spoken language, ensuring a seamless conversational experience.
 
 ## Getting Started
 
-### Requirements
-- A web browser supporting SpeechRecognition and SpeechSynthesis APIs (such as Google Chrome).
-- An API key from OpenAI. Please note, you need to obtain this key yourself from OpenAI.
+### Prerequisites
+- A web browser that supports the SpeechRecognition and SpeechSynthesis APIs (such as Google Chrome).
+- An API key from OpenAI. Please note that this key needs to be personally obtained from OpenAI's website.
 
 ### Setup
-1. Clone this repository to your local machine.
-2. Locate the variable named 'OPENAI_API_KEY' in the `main.js` file and replace 'sk-xxxxx' with your personal OpenAI API key.
-3. You can customize the behavior of the OpenAI model by modifying the content of 'OPENAI_SYSTEM_ROLE'. This allows you to define the model's 'persona' to suit your needs.
-4. Open `index.html` in your web browser to start the application.
+1. Clone this repository to your local environment.
+2. In the `main.js` file, find the 'OPENAI_API_KEY' variable and replace its value with your personal OpenAI API key.
+3. Optionally, adjust the behavior of the OpenAI model by modifying the 'OPENAI_SYSTEM_ROLE' variable. This allows you to personalize the model's 'persona'.
+4. Open `index.html` in your web browser to launch the application.
 
 ## Usage
-Speak to the application after clicking the "Start Recording" button. The application will transcribe your speech, send it to the OpenAI GPT model, and read out the model's response. You can stop the recording anytime by clicking the "Stop Recording" button.
-
+Click the "START" button and start speaking to the application. It will transcribe your speech, send it to the OpenAI GPT model for processing, and then read out the generated response. The "STOP" button can be used to cease the recording at any time.
