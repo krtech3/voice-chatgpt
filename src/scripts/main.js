@@ -18,12 +18,12 @@ const statusParameters = {
   stop: {
     statusClass: "nav__status-bar--stop",
     textContent: "■ STOP",
-    logMessage: "INFO:_Stopped",
+    logMessage: "INFO:_Process Stopped",
   },
   error: {
     statusClass: "nav__status-bar--error",
     textContent: "■ ERROR",
-    logMessage: "INFO:_error: ",
+    logMessage: "INFO:_Error Occurred: ",
   },
 };
 
@@ -62,6 +62,16 @@ const flags = {
 };
 
 function setFlag(flagName) {
+  if (!Object.prototype.hasOwnProperty.call(flags, flagName)) {
+    console.log(`ERROR:_${flagName} is not a valid flag`);
+    throw new Error(`Invalid flag name:_${flagName}`);
+  }
+
+  if (flags[flagName]) {
+    console.log(`FLAG:_${flagName} is already set`);
+    return;
+  }
+
   flags[flagName] = true;
   console.log(`FLAG:_${flagName} is set`);
 }
