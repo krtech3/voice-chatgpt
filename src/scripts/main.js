@@ -22,7 +22,7 @@ const statusParameters = {
   },
   error: {
     statusClass: "nav__status-bar--error",
-    textContent: "■ STOP",
+    textContent: "■ ERROR",
     logMessage: "INFO:_error: ",
   },
 };
@@ -99,8 +99,8 @@ function stopTimer() {
   console.log("INFO:_stopTimer Started");
   setTimeout(() => {
     recognition.stop();
+    console.log("INFO:_stopTimer Ended");
   }, 5000);
-  console.log("INFO:_stopTimer Ended");
 }
 
 async function startSpeechRecognitionAsync() {
@@ -147,7 +147,7 @@ async function sendMessageAsync(message) {
 
     if (!response.ok) {
       alert(
-        `Authentication failure: please set the correct API KEY - Status: ${response.status}`
+        `Authentication failure: please set the correct API KEY - STATUS: ${response.status}`
       );
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
@@ -177,38 +177,36 @@ async function sendMessageAsync(message) {
 
 function synthSpeak(message) {
   if (flags.isSpeechSynthesizedFlag) {
-    console.log(
-      "ERROR:_Error occurred during speech synthesis: Please refresh the browser"
-    );
-    alert(
-      "ERROR:_Error occurred during speech synthesis: Please refresh the browser"
-    );
+    console.log("INFO:_Speech synthesis has already been processed.");
     return;
   }
-  try {
-    // eslint-disable-next-line consistent-return
-    return new Promise((resolve, reject) => {
-      const utterance = new SpeechSynthesisUtterance(message);
-      utterance.lang = "ja-JP";
 
-      utterance.onend = () => {
-        console.log("INFO:_Speech synthesis ended");
-        resolve();
-      };
-      utterance.onerror = (event) => {
-        console.log(
-          `ERROR:_Error occurred during speech synthesis: ${event.error}`
-        );
-        reject(event.error);
-      };
+  // eslint-disable-next-line consistent-return
+  return new Promise((resolve, reject) => {
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = "ja-JP";
 
+    utterance.onend = () => {
+      console.log("INFO:_Speech synthesis ended");
+      resolve();
+    };
+    utterance.onerror = (event) => {
+      reject(event.error);
+    };
+    try {
       window.speechSynthesis.speak(utterance);
-    });
-  } catch (error) {
-    console.error(`ERROR:_Error occurred during speech synthesis: ${error}`);
-    changeElementStatus("error", error);
-    throw error;
-  }
+    } catch (error) {
+      if (error === "interrupted" || error === "canceled") {
+        console.log("INFO:_STOP button's process completed successfully");
+      } else {
+        console.error(
+          `ERROR:_Error occurred during speech synthesis: ${error}`
+        );
+        changeElementStatus("error", error);
+        reject(error);
+      }
+    }
+  });
 }
 
 startRecordingButton.addEventListener("click", async () => {
@@ -223,17 +221,32 @@ startRecordingButton.addEventListener("click", async () => {
 
     await synthSpeak(chatGptResponse);
     changeElementStatus("stop");
-    setFlag("isSpeechSynthesizeFlag");
+    setFlag("isSpeechSynthesizedFlag");
   } catch (error) {
-    console.error(`ERROR:_Error in the main function's process: ${error}`);
-    changeElementStatus("error", error);
+    if (error === "interrupted" || error === "canceled") {
+      console.log("INFO:_STOP button's process completed successfully");
+    } else {
+      console.error(`ERROR:_Error in the main function's process: ${error}`);
+      changeElementStatus("error", error);
+    }
   }
 });
 
 stopRecordingButton.addEventListener("click", () => {
-  console.log("INFO:_Voice recognition stopped");
-  recognition.stop();
-  speechSynthesis.cancel();
-  changeElementStatus("stop");
-  setFlag("isSpeechSynthesizedFlag");
+  try {
+    console.log("INFO:_STOP button's process started");
+    recognition.stop();
+    speechSynthesis.cancel();
+    changeElementStatus("stop");
+    setFlag("isSpeechSynthesizedFlag");
+  } catch (error) {
+    if (error === "interrupted" || error === "canceled") {
+      console.log("INFO:_STOP button's process completed successfully");
+    } else {
+      console.error(
+        `ERROR:_An unexpected error occurred in the STOP button's process: ${error}`
+      );
+      changeElementStatus("error", error);
+    }
+  }
 });
