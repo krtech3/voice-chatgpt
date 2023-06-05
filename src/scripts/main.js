@@ -105,34 +105,48 @@ function createApiRequestOptions(message) {
   return requestOptions;
 }
 
-function stopTimer() {
-  console.log("INFO:_stopTimer Started");
-  setTimeout(() => {
+function startSilenceTimer() {
+  return setTimeout(() => {
     recognition.stop();
-    console.log("INFO:_stopTimer Ended");
+    console.log("INFO:_silenceTimer Ended");
   }, 5000);
+}
+
+function clearExistingTimeout(timeoutId) {
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
 }
 
 async function startSpeechRecognitionAsync() {
   return new Promise((resolve, reject) => {
     let inputVoice = "";
+    let timeoutId;
     recognition.start();
     changeElementStatus("start");
+
     recognition.onspeechend = () => {
       recognition.stop();
+      clearExistingTimeout(timeoutId);
       console.log("INFO:_Transcription process completed");
     };
+
     recognition.onresult = (event) => {
       inputVoice = event.results[0][0].transcript;
       transcriptElement.textContent = inputVoice;
       console.log("INFO:_Transcribing..");
-      stopTimer();
+      clearExistingTimeout(timeoutId);
+      timeoutId = startSilenceTimer();
     };
+
     recognition.onend = () => {
+      clearExistingTimeout(timeoutId);
       console.log("INFO:_Voice recognition ended");
       resolve(inputVoice);
     };
+
     recognition.onerror = (event) => {
+      clearExistingTimeout(timeoutId);
       changeElementStatus("stop");
       setFlag("isSpeechSynthesizedFlag");
       console.log(`ERROR:_Error occurred in voice recognition: ${event.error}`);
