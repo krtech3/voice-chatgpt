@@ -199,7 +199,7 @@ async function sendMessageAsync(message) {
   }
 }
 
-function synthSpeak(message) {
+function readTextWithSynthesizedSpeech(message) {
   if (flags.isSpeechSynthesizedFlag) {
     console.log("INFO:_Speech synthesis has already been processed.");
     return;
@@ -243,7 +243,7 @@ startRecordingButton.addEventListener("click", async () => {
     const chatGptResponse = await sendMessageAsync(message);
     setFlag("isMessageSentFlag");
 
-    await synthSpeak(chatGptResponse);
+    await readTextWithSynthesizedSpeech(chatGptResponse);
     changeElementStatus("stop");
     setFlag("isSpeechSynthesizedFlag");
   } catch (error) {
