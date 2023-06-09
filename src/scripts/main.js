@@ -37,12 +37,9 @@ const changeElementStatus = (status, error = null) => {
 
 // Replace with your actual OpenAI API Key
 const OPENAI_API_KEY = "Your OpenAI API Key Here!";
-
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-
 // Specify the OpenAI GPT model name here. Options are 'gpt-4', 'gpt-3.5-turbo'.
 const OPENAI_MODEL_NAME = "gpt-3.5-turbo";
-
 // Modify 'OPENAI_SYSTEM_ROLE' to customize the model's 'persona' as needed.
 const OPENAI_SYSTEM_ROLE =
   "あなたは優秀なソフトウェアエンジニアです。質問に対して簡潔に回答します。";
@@ -174,7 +171,6 @@ async function sendMessageAsync(message) {
         `Authentication failure: please set the correct API KEY - STATUS: ${response.status}`
       );
       await Promise.reject(new Error(`HTTP Error! Status: ${response.status}`));
-      //throw new Error(`HTTP Error! Status: ${response.status}`);
     }
     const data = await response.json();
     console.log(
