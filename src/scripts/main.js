@@ -173,7 +173,8 @@ async function sendMessageAsync(message) {
       alert(
         `Authentication failure: please set the correct API KEY - STATUS: ${response.status}`
       );
-      throw new Error(`HTTP Error! Status: ${response.status}`);
+      await Promise.reject(new Error(`HTTP Error! Status: ${response.status}`));
+      //throw new Error(`HTTP Error! Status: ${response.status}`);
     }
     const data = await response.json();
     console.log(
