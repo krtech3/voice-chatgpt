@@ -94,10 +94,8 @@ function createApiRequestOptions(message) {
   });
   const requestOptions = {
     method: "POST",
-    // eslint-disable-next-line object-shorthand
-    headers: headers,
-    // eslint-disable-next-line object-shorthand
-    body: body,
+    headers,
+    body,
   };
   return requestOptions;
 }
