@@ -1,37 +1,11 @@
 {
   // VSCodeの設定ファイルは、厳密にはJSONではなくJSONCという形式です。そのためコメントが使用できます
-  "editor.defaultFormatter": "esbenp.prettier-vscode", // フォーマッターをPrettierにする
-  "editor.formatOnSave": true, // ファイル保存時にフォーマットを実行
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "[markdown]": {
     // markdownのフォーマットを無効化
     "editor.formatOnSave": false
   },
-
-  //
-  // Rubocop Settings
-  //
-  // If not specified searches for 'rubocop' executable available on PATH (default and recommended)
-  "ruby.rubocop.executePath": "~/.rbenv/shims/",
-
-  // You can use specific path
-  // "ruby.rubocop.executePath": "/Users/you/.rbenv/shims/"
-  // "ruby.rubocop.executePath": "/Users/you/.rvm/gems/ruby-2.3.2/bin/"
-  // "ruby.rubocop.executePath": "D:/bin/Ruby22-x64/bin/"
-
-  // If not specified, it assumes a null value by default.
-  //"ruby.rubocop.configFilePath": "/path/to/config/.rubocop.yml",
-
-  // default true
-  "ruby.rubocop.onSave": true,
-
-  // use the --server option when running Rubocop - default false
-  "ruby.rubocop.useServer": false,
-
-  // If "true", it hides all the Disable/Ignore options, nudging to prefer fixing violations
-  "ruby.rubocop.hideDisableSuggestions": false,
-
-  //
   // markdown-preview-enhanced Settings
-  //
   "markdown-preview-enhanced.automaticallyShowPreviewOfMarkdownBeingEdited": true
 }
