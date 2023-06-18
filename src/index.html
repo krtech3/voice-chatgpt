@@ -10,6 +10,14 @@
     />
     <link rel="stylesheet" href="./styles/chat.css" />
     <script src="./scripts/main.js" defer></script>
+    <script>
+      const cspHeader =
+        "default-src 'self' https://api.openai.com/v1/chat/completions; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src 'none';";
+      const meta = document.createElement("meta");
+      meta.httpEquiv = "Content-Security-Policy";
+      meta.content = cspHeader;
+      document.head.appendChild(meta);
+    </script>
   </head>
   <body>
     <header class="header">
